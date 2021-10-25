@@ -1,31 +1,29 @@
 package com.ashish.exception;
 
+import com.ashish.validations.ErrorCode;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @ControllerAdvice
-public class ConstraintViolationExceptionResolver extends ResponseEntityExceptionHandler {
-    @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+public class ConstraintViolationExceptionResolver {
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
 
-        List<PatternError> errorMessages = new ArrayList<>();
-        BindingResult bindingResult = ex.getBindingResult();
-        List<ObjectError> errors = bindingResult.getAllErrors();
-        for (ObjectError error : errors) {
-            Object code = error.getArguments()[1];
-            String message = error.getDefaultMessage();
-            errorMessages.add(new PatternError(code, message));
-        }
-        return new ResponseEntity<>(errorMessages, new HttpHeaders(), HttpStatus.BAD_REQUEST);
+        List<Object> errorList = ex.getBindingResult().getAllErrors()
+                .stream()
+                .map(e -> {
+                    final ErrorCode error = (ErrorCode) e.getArguments()[1];
+                    return new PatternError(error.name(), error.getErrorDescription());
+                })
+                .collect(Collectors.toList());
+
+        return new ResponseEntity<>(errorList, new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
 }
