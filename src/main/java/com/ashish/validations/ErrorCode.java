@@ -5,10 +5,8 @@ import org.springframework.http.HttpStatus;
 import java.util.regex.Pattern;
 
 public enum ErrorCode {
-    ERR001("Invalid name", "userId must be alphanumeric, maximum 20 characters.", false, "^[0-9A-Za-z]{1,20}$", HttpStatus.ACCEPTED),
-    ERR002("Invalid name", "userId must be alphanumeric, maximum 20 characters.", false, "^[0-9A-Za-z]{1,20}$", HttpStatus.ACCEPTED),
-    ERR003("Invalid name", "userId must be alphanumeric, maximum 20 characters.");
-
+    ERR001("Invalid userId", "userId must be alphanumeric, maximum 5 characters.", false, "^[0-9A-Za-z]{1,5}$", HttpStatus.ACCEPTED),
+    ERR002("Invalid name", "Name must be alphanumeric, maximum 10 characters.", false, "^[0-9A-Za-z]{1,10}$", HttpStatus.ACCEPTED);
 
     private String userMessage;
     private String errorDescription;

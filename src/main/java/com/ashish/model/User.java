@@ -4,9 +4,9 @@ import com.ashish.validations.ErrorCode;
 import com.ashish.validations.StringPattern;
 
 public class User {
-    @StringPattern(errorCode = ErrorCode.ERR001)
-    private String name;
     @StringPattern(errorCode = ErrorCode.ERR002)
+    private String name;
+    @StringPattern(errorCode = ErrorCode.ERR001)
     private String id;
 
     public User() {

@@ -16,13 +16,16 @@ public class ConstraintViolationExceptionResolver {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
 
-        List<Object> errorList = ex.getBindingResult().getAllErrors()
-                .stream()
-                .map(e -> {
-                    final ErrorCode error = (ErrorCode) e.getArguments()[1];
-                    return new PatternError(error.name(), error.getErrorDescription());
-                })
-                .collect(Collectors.toList());
+        List<Object> errorList =
+                        ex
+                        .getBindingResult()
+                        .getAllErrors()
+                        .stream()
+                        .map(e -> {
+                            final ErrorCode error = (ErrorCode) e.getArguments()[1];
+                            return new PatternError(error.name(), error.getErrorDescription());
+                        })
+                        .collect(Collectors.toList());
 
         return new ResponseEntity<>(errorList, new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
